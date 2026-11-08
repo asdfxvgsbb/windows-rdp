@@ -1,0 +1,25 @@
+name: CPU Check Only
+
+on:
+  workflow_dispatch:
+
+jobs:
+  cpu:
+    runs-on: windows-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check CPU & RAM
+        run: |
+          Write-Host "===== CPU INFO ====="
+          $cpu = Get-CimInstance Win32_Processor
+          Write-Host "CPU Name : $($cpu.Name)"
+          Write-Host "Cores    : $($cpu.NumberOfCores)"
+          Write-Host "Threads  : $($cpu.NumberOfLogicalProcessors)"
+          Write-Host "Arch     : $($cpu.Architecture)"
+          Write-Host "===== RAM ====="
+          $cs = Get-CimInstance Win32_ComputerSystem
+          $os = Get-CimInstance Win32_OperatingSystem
+          Write-Host "Total RAM (GB) : $([math]::Round($cs.TotalPhysicalMemory/1GB,1))"
+          Write-Host "Free  RAM (GB) : $([math]::Round($os.FreePhysicalMemory/1MB,1))"
+          Write-Host "===== OS ====="
+          Write-Host "$($os.Caption) $($os.Version)"
